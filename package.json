@@ -7,8 +7,8 @@
     "start": "node src/server.js",
     "watch": "nodemon src/server.js -e ejs,html,js,json",
     "test": "mocha index.test.js",
-    "test-manual": "node src/server.js --modo test",
-    "serve:staging": "node src/server.js --modo staging"
+    "test-manual": "node src/server.js test",
+    "serve:staging": "node src/server.js staging"
   },
   "keywords": [],
   "author": "",

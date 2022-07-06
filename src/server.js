@@ -24,7 +24,7 @@ for (let k in interfaces) {
 }
 
 const puerto = parseArgs(process.argv.slice(2));
-const uri = puerto._.includes('staging') ? process.env.MONGO_CNXSTR : process.env.MONGO_CNXSTR_TEST
+const uri = puerto._.includes('staging') ? process.env.MONGO_CNXSTR_TEST : process.env.MONGO_CNXSTR
 const app = express();
 
 app.use(express.json());
@@ -61,7 +61,6 @@ if(puerto._.includes('test')){
 
     const test = new testAxios();
     test.allProducts();
-    console.log(test.allProducts())
     test.productForId(1);
     test.newProduct( productToTest.title, productToTest.description, productToTest.code, productToTest.photoUrl, productToTest.price, productToTest.timestamp, productToTest.stock );
     test.updateForId( 1,productToTest );
