@@ -1,7 +1,5 @@
 import { Router } from "express";
-import cartApiFile from "../daos/carts/cartsDaoFile.js";
 import cartApiMongo from "../daos/carts/cartsDaoMongo.js";
-import cartApiFirebase from "../daos/carts/cartsDaoFirebase.js";
 import twilio from "twilio";
 import 'dotenv/config';
 import users from "../models/users.js";

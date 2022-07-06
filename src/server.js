@@ -24,10 +24,8 @@ for (let k in interfaces) {
 }
 
 const puerto = parseArgs(process.argv.slice(2));
-
+const uri = puerto._.includes('staging') ? process.env.MONGO_CNXSTR : process.env.MONGO_CNXSTR_TEST
 const app = express();
-
-const uri = proccess.env.MONGO_CNXSTR;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
