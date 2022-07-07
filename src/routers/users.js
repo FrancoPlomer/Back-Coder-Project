@@ -1,15 +1,17 @@
 import { Router } from "express";
+import { Strategy } from "passport-local";
+import { createTransport } from 'nodemailer';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import users from "../models/users.js";
-import { Strategy } from "passport-local";
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import { createTransport } from 'nodemailer';
 import logger from "../logger.js";
 import upload from "./upload/upload.js";
 import fs from 'fs';
 import path from 'path';
+import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/utils.js";
 
 
 const usersApiRouter = new Router();
@@ -68,7 +70,8 @@ usersApiRouter.use(passport.session());
 usersApiRouter.post('/login', passport.authenticate('local'), 
 function (req, res) {
     try {
-        res.json(userData);
+        const access_token = generateToken(usuario)
+        res.json({ access_token });
     } catch (error) {
         res.json({
             error: "error en logueo"
@@ -131,9 +134,11 @@ usersApiRouter.post('/register' ,upload.single('image'), async (req, res)=>{
                         `
                     }
                     await newUserToAddModel.save()
+                    const access_token = generateToken(usuario)
                     await transporter.sendMail(mailOptions)
                     res.json({
-                        confirm: `El usuario ${nombre} fue creado !`
+                        confirm: `El usuario ${nombre} fue creado !`,
+                        token: access_token
                     })
                 });
             }
