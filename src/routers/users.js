@@ -70,8 +70,11 @@ usersApiRouter.use(passport.session());
 usersApiRouter.post('/login', passport.authenticate('local'), 
 function (req, res) {
     try {
-        const access_token = generateToken(usuario)
-        res.json({ access_token });
+        const access_token = generateToken(userData)
+        res.json({
+            user: userData,
+            token: access_token
+        });
     } catch (error) {
         res.json({
             error: "error en logueo"
