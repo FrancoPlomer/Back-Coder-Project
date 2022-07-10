@@ -4,7 +4,6 @@ import twilio from "twilio";
 import 'dotenv/config';
 import users from "../models/users.js";
 import { createTransport } from 'nodemailer';
-import 'dotenv/config';
 import logger from "../logger.js";
 
 

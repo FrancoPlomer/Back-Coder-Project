@@ -32,10 +32,10 @@ const schema = buildSchema(`
     }
     type Query {
         list(id: ID!): Productos,
-        listAll: [Productos],
+        listAll: [Productos]
     }
     type Mutation {
-        save(datos: ProductosInput): Productos
+        save(datos: ProductosInput): Productos,
         update(id: ID!, datos: ProductosInput): Productos,
         deleteOne(id: ID!): Productos,
         deleteAll: [Productos]

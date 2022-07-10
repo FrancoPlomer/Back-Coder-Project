@@ -10,7 +10,10 @@ import cors from 'cors';
 import * as os from 'os';
 import logger from "./logger.js";
 import { testAxios } from "../axiosClientTest.js";
+import { Server } from 'socket.io'
 import 'dotenv/config';
+import messagesApiRouter from "./routers/messages.js";
+
 //Para chequear la ip asi trabajamos desde multiples dispositivos
 let interfaces = os.networkInterfaces();
 let addresses = [];
@@ -22,7 +25,6 @@ for (let k in interfaces) {
         }
     }
 }
-
 const puerto = parseArgs(process.argv.slice(2));
 const uri = puerto._.includes('staging') ? process.env.MONGO_CNXSTR_TEST : process.env.MONGO_CNXSTR
 const app = express();
@@ -46,6 +48,7 @@ app.use((req, res, next) => {
 app.use('/api/products', productosApiRouter);
 app.use('/api/carts', cartsApiRouter);
 app.use('/api/users', usersApiRouter);
+app.use('/api/messages', messagesApiRouter);
 
 //Cliente de prueba con axios
 if(puerto._.includes('test')){
@@ -86,7 +89,8 @@ if(puerto._[0] === "cluster")
 const connectedServer = app.listen(process.env.PORT, () => {
     logger.info(`Servidor escuchando en el puerto ${connectedServer.address().port}`)
 })
-
-mongoose.connect(uri, config.mongoRemote.client)
-
 connectedServer.on('error', error => logger.error(`Error en el servidor ${error}`))
+
+mongoose.connect(uri, config.mongoRemote.client);
+
+export const io = new Server(connectedServer);

@@ -1,9 +1,7 @@
 import * as productsModel from "../models/products.js";
 import * as cartsModel from "../models/carts.js";
-import { createTransport } from 'nodemailer';
-
-
-const ADRESS_MAIL = 'info@ethereal.email'
+import { io } from "../server.js";
+import * as messagesModel from "../models/messages.js";
 
 export class ContainerProductsMongo {
     constructor () {
@@ -185,5 +183,47 @@ export class ContainerCartsMongo extends ContainerProductsMongo {
                 message: "No se encontro el carrito."
             }
         }
+    }
+}
+
+export class ContainerMessagesMongo {
+    async listAllMessages(email) {
+        const mensaje = await messagesModel.messages.find({author: email})
+        io.on('connection', function(socket) {
+            console.log('Un cliente se ha conectado');
+            socket.emit('messages', mensaje.messages);
+        });
+    }
+    async addNewMessage(mensaje) {
+        let newMessage;   
+        let newId;
+        const allMessages = await messagesModel.messages.find();
+        const [authorData] = await messagesModel.messages.find({author: mensaje.author});
+        if(allMessages.length == 0) {
+            newId = 1;
+            newMessage = { id: newId, author: mensaje.author, messages: [mensaje.message] }
+            const newMessageSaveModel = new messagesModel.messages(newMessage);
+            const newMessageSave = await newMessageSaveModel.save()
+            return newMessageSave;
+        } else {
+            if(!authorData)
+            {
+                newId = parseInt(allMessages[allMessages.length - 1].id) + 1
+                newMessage = {
+                    id: newId,
+                    author: mensaje.author,
+                    messages: [mensaje.message]
+                }
+                const newMessageSaveModel = new messagesModel.messages(newMessage);
+                const newMessageSave = await newMessageSaveModel.save();
+                return newMessageSave;
+            }
+            else{
+                const newMessageSave = await messagesModel.messages.updateOne({id: authorData.id}, {
+                    $set: { messages: [...authorData.messages, mensaje.message] }
+                })
+                return newMessageSave;
+            }
+        }   
     }
 }
