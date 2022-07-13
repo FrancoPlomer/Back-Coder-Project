@@ -5,9 +5,11 @@ import 'dotenv/config';
 import users from "../models/users.js";
 import { createTransport } from 'nodemailer';
 import logger from "../logger.js";
+import ordersApiMongo from "../daos/orders/ordersDaoMongo.js";
 
 
 const carts = cartApiMongo;
+const orders = ordersApiMongo;
 const cartsApiRouter = new Router();
 const client = twilio(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
 const transporter = createTransport({
@@ -167,25 +169,26 @@ cartsApiRouter.post('/:userName/carts', async (req, res) => {
             const [user] = await users.find({user: Cart.userName})
             if(Cart.products.length > 0)
             {
-                const mailOptions = {
-                    from: `${user.mail}`,
-                    to: ADRESS_MAIL,
-                    subject: `<p>Nuevo pedido de: \n ${user.user} \n ${user.email} \n `,
-                    html: `${JSON.stringify(Cart.products)}</p>`
-                }
-                await transporter.sendMail(mailOptions)
+                // const mailOptions = {
+                //     from: `${user.mail}`,
+                //     to: ADRESS_MAIL,
+                //     subject: `<p>Nuevo pedido de: \n ${user.user} \n ${user.email} \n `,
+                //     html: `${JSON.stringify(Cart.products)}</p>`
+                // }
+                // await transporter.sendMail(mailOptions)
 
-                await client.messages.create({
-                    body: ` Nuevo pedido de: \n Cliente: ${user.user} \n Email: ${user.email} \n Productos: ${Cart.products.map(product => product.title)}`,
-                    from: `whatsapp:${process.env.twilioNumberWhatsapp}`,
-                    to: `whatsapp:${process.env.myNumberWhatsapp}`
-                })
+                // await client.messages.create({
+                //     body: ` Nuevo pedido de: \n Cliente: ${user.user} \n Email: ${user.email} \n Productos: ${Cart.products.map(product => product.title)}`,
+                //     from: `whatsapp:${process.env.twilioNumberWhatsapp}`,
+                //     to: `whatsapp:${process.env.myNumberWhatsapp}`
+                // })
 
-                await client.messages.create({
-                    body: 'Su pedido fue recibido y se encuentra en proceso',
-                    from: `${process.env.twilioNumber}`,
-                    to: `${process.env.myNumber}`
-                })
+                // await client.messages.create({
+                //     body: 'Su pedido fue recibido y se encuentra en proceso',
+                //     from: `${process.env.twilioNumber}`,
+                //     to: `${process.env.myNumber}`
+                // })
+                await orders.addOrder(Cart);
                 await carts.clearProductsInCart(req.params.userName)
                 res.json({confirm: "Compra confirmada"})
             }

@@ -86,7 +86,7 @@ function (req, res) {
 usersApiRouter.post('/register' ,upload.single('image'), async (req, res)=>{
     try {
         const { mail, nombre, password, direccion, edad, numTelefono } = req.body;
-        const [newUser] = await users.find({user: nombre})
+        const [newUser] = await users.find({email: mail})
 
         if (newUser) {
             res.json({
@@ -137,7 +137,7 @@ usersApiRouter.post('/register' ,upload.single('image'), async (req, res)=>{
                         `
                     }
                     await newUserToAddModel.save()
-                    const access_token = generateToken(usuario)
+                    const access_token = generateToken(newUserToAddModel)
                     await transporter.sendMail(mailOptions)
                     res.json({
                         confirm: `El usuario ${nombre} fue creado !`,

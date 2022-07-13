@@ -1,8 +1,9 @@
 import * as productsModel from "../models/products.js";
 import * as cartsModel from "../models/carts.js";
-import { io } from "../server.js";
+import * as ordersModel from "../models/orders.js"
 import * as messagesModel from "../models/messages.js";
 
+global.mensaje = [];
 export class ContainerProductsMongo {
     constructor () {
     }
@@ -188,11 +189,8 @@ export class ContainerCartsMongo extends ContainerProductsMongo {
 
 export class ContainerMessagesMongo {
     async listAllMessages(email) {
-        const mensaje = await messagesModel.messages.find({author: email})
-        io.on('connection', function(socket) {
-            console.log('Un cliente se ha conectado');
-            socket.emit('messages', mensaje.messages);
-        });
+        const [info] = await messagesModel.messages.find({author: email})
+        mensaje = info;
     }
     async addNewMessage(mensaje) {
         let newMessage;   
@@ -225,5 +223,38 @@ export class ContainerMessagesMongo {
                 return newMessageSave;
             }
         }   
+    }
+}
+
+export class ContainerOrdersMongo {
+    async listAllOrders () {
+        try {
+            const allOrders = await ordersModel.orders.find()
+            return allOrders
+        } catch (error) {
+            throw new Error(`Error al mostrar todas las ordenes: ${error}`)
+        }
+    }
+    async addOrder (data) {
+        try {
+            let newId;
+            const orders =  await this.listAllOrders()
+            const timestamp = Date.now()
+            if(orders.length == 0) {
+                newId = 1;
+            } else {
+                newId = parseInt(orders[orders.length - 1].id) + 1
+            }
+            const newOrder = { id: newId, email: data.userName, state: 'generada', timestamp, products: data.products }
+            const newOrderSaveModel = new ordersModel.orders(newOrder);
+            const newOrderSave = await newOrderSaveModel.save()
+            return newOrderSave;
+            
+        } catch (error) {
+            return {
+                err: -1,
+                message: "no envio ningun producto"
+            }
+        }
     }
 }

@@ -26,3 +26,11 @@
 {"level":"error","message":"Contrase;a invalida"}
 {"level":"error","message":"Contrase;a invalida"}
 {"level":"warn","message":"only jpg or png are supported"}
+{"level":"error","message":"Error en el servidor Error: listen EADDRINUSE: address already in use :::3001"}
+{"level":"warn","message":"Usuario no encontrado"}
+{"level":"warn","message":"Usuario no encontrado"}
+{"level":"warn","message":"Usuario no encontrado"}
+{"level":"warn","message":"Usuario no encontrado"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}

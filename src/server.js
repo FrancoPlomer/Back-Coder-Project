@@ -1,18 +1,19 @@
+import { testAxios } from "../axiosClientTest.js";
+import { exec } from 'child_process';
 import express from "express";
 import mongoose from "mongoose";
 import config from "./config.js";
+import parseArgs from 'minimist';
 import productosApiRouter from "./routers/products.js";
 import cartsApiRouter from "./routers/carts.js";
 import usersApiRouter from "./routers/users.js";
-import parseArgs from 'minimist';
-import { exec } from 'child_process';
+import messagesApiRouter from "./routers/messages.js";
 import cors from 'cors';
 import * as os from 'os';
 import logger from "./logger.js";
-import { testAxios } from "../axiosClientTest.js";
-import { Server } from 'socket.io'
 import 'dotenv/config';
-import messagesApiRouter from "./routers/messages.js";
+import { Server } from 'socket.io';
+import * as messagesModel from "./models/messages.js";
 
 //Para chequear la ip asi trabajamos desde multiples dispositivos
 let interfaces = os.networkInterfaces();
@@ -32,13 +33,12 @@ const allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-
-    // intercept OPTIONS method
+ 
     if ('OPTIONS' == req.method) {
-      res.send(200);
+        res.send(200);    
     }
     else {
-      next();
+        next();
     }
 };
 
@@ -65,7 +65,6 @@ if(puerto._.includes('test')){
         timestamp: Date.now(),
         stock: 10
     }
-
     const test = new testAxios();
     test.allProducts();
     test.productForId(1);
@@ -90,11 +89,33 @@ if(puerto._[0] === "cluster")
     });
 }
 
-const connectedServer = app.listen(process.env.PORT, () => {
+export const connectedServer = app.listen(process.env.PORT, () => {
     logger.info(`Servidor escuchando en el puerto ${connectedServer.address().port}`)
 })
+
+const io = new Server(connectedServer, {
+    cors: {
+        origin: "http://192.168.0.169:3000",
+        methods: ["GET", "POST"]
+    }
+});
+io.on("connection",  (socket) => {
+    console.log("usuario conectado");
+    socket.on('message', async (user) => {
+        [mensaje] = await messagesModel.messages.find({author: user})
+        io.emit("message", {
+            msg: mensaje?.messages ?? ['No hay mensajes...']
+        });
+    } )
+    socket.on('disconnect', () => {
+        console.log('disconect')
+    })
+
+});
+
+
 connectedServer.on('error', error => logger.error(`Error en el servidor ${error}`))
 
 mongoose.connect(uri, config.mongoRemote.client);
 
-export const io = new Server(connectedServer);
+
