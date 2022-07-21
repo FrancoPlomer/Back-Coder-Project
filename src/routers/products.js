@@ -1,9 +1,9 @@
 import { Router } from "express";
-import productsApiMongo from "../daos/products/productsDaoMongo.js";
-import 'dotenv/config';
-import logger from "../logger.js";
 import { graphqlHTTP } from 'express-graphql';
+import productsApiMongo from "../daos/products/productsDaoMongo.js";
+import logger from "../logger.js";
 import pkg from 'graphql';
+import 'dotenv/config';
 const { buildSchema } = pkg;
 
 

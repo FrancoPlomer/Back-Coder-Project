@@ -1,11 +1,13 @@
 import { Router } from "express";
+import { createTransport } from 'nodemailer';
+import { CartsDto } from "../dto/cartsDto.js";
+import { ProductsDto } from "../dto/productsCartDto.js";
+import users from "../models/users.js";
+import logger from "../logger.js";
+import ordersApiMongo from "../daos/orders/ordersDaoMongo.js";
 import cartApiMongo from "../daos/carts/cartsDaoMongo.js";
 import twilio from "twilio";
 import 'dotenv/config';
-import users from "../models/users.js";
-import { createTransport } from 'nodemailer';
-import logger from "../logger.js";
-import ordersApiMongo from "../daos/orders/ordersDaoMongo.js";
 
 
 const carts = cartApiMongo;
@@ -28,8 +30,11 @@ let Admin = true;
 
 cartsApiRouter.get('/:userName', async (req, res) => {
     try {
-        res.json(await carts.listCart(req.params.userName))
+        const allCarts = await carts.listCart(req.params.userName);
+        const cartsDtos = allCarts.map( cart => new CartsDto(cart) );
+        res.json(cartsDtos);
     } catch (error) {
+        logger.error(error)
         res.json({
             err: -1,
             message: error
@@ -39,8 +44,11 @@ cartsApiRouter.get('/:userName', async (req, res) => {
 
 cartsApiRouter.get('/:id/products', async (req, res) => {
     try {
-        res.json(await carts.listCartProducts(req.params.id))
+        const cartSelected = await carts.listCartProducts(req.params.id);
+        const cartsDtos = cartSelected.map( product => new ProductsDto(product) );
+        res.json(cartsDtos);
     } catch (error) {
+        logger.error(error)
         res.json({
             err: -1,
             message: error
@@ -53,6 +61,7 @@ cartsApiRouter.post('/:userName', async (req, res) => {
         try {
             res.json(await carts.addCart(req.params.userName))
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -60,6 +69,7 @@ cartsApiRouter.post('/:userName', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -72,6 +82,7 @@ cartsApiRouter.post('/:idCart/products/:idProduct', async (req, res) => {
         try {
             res.json(await carts.addProductsToCart(req.params.idCart, req.params.idProduct))
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -79,6 +90,7 @@ cartsApiRouter.post('/:idCart/products/:idProduct', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -91,6 +103,7 @@ cartsApiRouter.post('/:idCart/delete/:idProduct', async (req, res) => {
         try {
             res.json(await carts.deleteProductsToCart(req.params.idCart, req.params.idProduct))
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -98,6 +111,7 @@ cartsApiRouter.post('/:idCart/delete/:idProduct', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -110,6 +124,7 @@ cartsApiRouter.put('/:id', async (req, res) => {
         try {
             res.json(await carts.update({ ...req.body, id: req.params.id }))
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -117,6 +132,7 @@ cartsApiRouter.put('/:id', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -129,6 +145,7 @@ cartsApiRouter.delete('/:id', async (req, res) => {
         try {
             res.json(await carts.deleteCart(req.params.id))
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -136,6 +153,7 @@ cartsApiRouter.delete('/:id', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -148,6 +166,7 @@ cartsApiRouter.delete('/', async (req, res) => {
         try {
             res.json(await carts.deleteAllCarts())
         } catch (error) {
+            logger.error(error)     
             res.json({
                 err: -1,
                 message: error
@@ -155,6 +174,7 @@ cartsApiRouter.delete('/', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"
@@ -193,6 +213,7 @@ cartsApiRouter.post('/:userName/carts', async (req, res) => {
                 res.json({confirm: "Compra confirmada"})
             }
             else{
+                logger.error("Su carrito esta vacio.")     
                 res.json({
                     err: "Su carrito esta vacio."
                 })
@@ -206,6 +227,7 @@ cartsApiRouter.post('/:userName/carts', async (req, res) => {
         }
     }
     else{
+        logger.error("ruta no autorizada")     
         res.json({
             err: -1,
             message: "ruta no autorizada"

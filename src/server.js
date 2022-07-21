@@ -1,5 +1,8 @@
 import { testAxios } from "../axiosClientTest.js";
 import { exec } from 'child_process';
+import { Server } from 'socket.io';
+import * as os from 'os';
+import * as messagesModel from "./models/messages.js";
 import express from "express";
 import mongoose from "mongoose";
 import config from "./config.js";
@@ -9,11 +12,8 @@ import cartsApiRouter from "./routers/carts.js";
 import usersApiRouter from "./routers/users.js";
 import messagesApiRouter from "./routers/messages.js";
 import cors from 'cors';
-import * as os from 'os';
 import logger from "./logger.js";
 import 'dotenv/config';
-import { Server } from 'socket.io';
-import * as messagesModel from "./models/messages.js";
 
 //Para chequear la ip asi trabajamos desde multiples dispositivos
 let interfaces = os.networkInterfaces();

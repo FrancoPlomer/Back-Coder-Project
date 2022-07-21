@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Strategy } from "passport-local";
 import { createTransport } from 'nodemailer';
+import { generateToken } from "../utils/utils.js";
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import users from "../models/users.js";
@@ -10,8 +11,6 @@ import logger from "../logger.js";
 import upload from "./upload/upload.js";
 import fs from 'fs';
 import path from 'path';
-import jwt from "jsonwebtoken";
-import { generateToken } from "../utils/utils.js";
 
 
 const usersApiRouter = new Router();
