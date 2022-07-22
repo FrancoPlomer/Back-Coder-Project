@@ -32,12 +32,12 @@ Las herramientas que se utilizan son las siguientes: \
 ![#00d1a0](http://via.placeholder.com/10/00b48a?text=+)pm2 \
 ![#00d1a0](http://via.placeholder.com/10/00b48a?text=+)socket.io \
 ![#00d1a0](http://via.placeholder.com/10/00b48a?text=+)twilio \
-![#00d1a0](http://via.placeholder.com/10/00b48a?text=+)winston \
+![#00d1a0](http://via.placeholder.com/10/00b48a?text=+)winston 
 
 ## 🛠 Dependencias de desarrollo:
 ![#3B86FF](http://via.placeholder.com/10/3B86FF?text=+)chai \
 ![#3B86FF](http://via.placeholder.com/10/3B86FF?text=+)mocha \
-![#3B86FF](http://via.placeholder.com/10/3B86FF?text=+)supertest \
+![#3B86FF](http://via.placeholder.com/10/3B86FF?text=+)supertest 
 
 ## 💬 Listado de rutas: 
 
@@ -60,7 +60,7 @@ borrar producto al carro: http://apis-ecommerce.herokuapp.com/api/carts/${idCart
 
 confirmar compra:  http://apis-ecommerce.herokuapp.com/api/carts/${idCart}/carts
 
-//MENSAJES
+👩‍💻 MENSAJES \
 mandar mensaje: http://apis-ecommerce.herokuapp.com/api/messages/chat
 
 
