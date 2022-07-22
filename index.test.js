@@ -4,7 +4,7 @@ import { describe } from "mocha";
 import supertest from "supertest";
 import { testAxios } from "./axiosClientTest.js";
 
-supertest('http://localhost:3001/api/products');
+supertest('https://apis-ecommerce.herokuapp.com/api/products');
 describe("test sobre el crud de productos", () => {
     const productToTest = {
         title: "coca cola",

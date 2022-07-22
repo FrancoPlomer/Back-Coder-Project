@@ -2,7 +2,7 @@ import axios from "axios";
 
 export class testAxios {
     async allProducts() {
-        const response =  await axios.get('http://localhost:3001/api/products').then(response => {
+        const response =  await axios.get('https://apis-ecommerce.herokuapp.com/api/products').then(response => {
                 if(response.data)
                 {
                     return {
@@ -19,7 +19,7 @@ export class testAxios {
         return  response;
     }
     async productForId(id) {
-        axios.get(`http://localhost:3001/api/products/${id}`)
+        axios.get(`https://apis-ecommerce.herokuapp.com/api/products/${id}`)
             .then(response => {
                 return {
                     message: 'Producto filtrado por id, prueba exito !',
@@ -33,7 +33,7 @@ export class testAxios {
             })
     }
     async newProduct(title, description, code, photoUrl, price, timestamp, stock) {
-        axios.post('http://localhost:3001/api/products',
+        axios.post('https://apis-ecommerce.herokuapp.com/api/products',
             title,
             description, 
             code, 
@@ -55,7 +55,7 @@ export class testAxios {
             })
     }
     async updateForId(id, body) {
-        axios.put(`http://localhost:3001/api/products/${id}`, {
+        axios.put(`https://apis-ecommerce.herokuapp.com/api/products/${id}`, {
             id: body.id,
             title: body.title,
             description: body.description,
@@ -79,7 +79,7 @@ export class testAxios {
     }
 
     async deleteProductForId(id) {
-        axios.delete(`http://localhost:3001/api/products/${id}`)
+        axios.delete(`https://apis-ecommerce.herokuapp.com/api/products/${id}`)
             .then(response => {
                 return {
                     message: 'Producto eliminado por id, prueba exito !',
@@ -94,7 +94,7 @@ export class testAxios {
     }
 
     async deleteAllProduct() {
-        axios.delete('http://localhost:3001/api/products')
+        axios.delete('https://apis-ecommerce.herokuapp.com/api/products')
             .then(response => {
                 return {
                     message: 'borrar todos los productos, prueba exito!',
