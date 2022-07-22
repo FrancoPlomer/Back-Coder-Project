@@ -4,7 +4,7 @@
 A continuación encontraras un servicio backend realizado con algunos
 elementos del stack MERN de NodeJS. \
 Las herramientas que se utilizan son las siguientes:
-<img src="https://via.placeholder.com/10/00b48a?text=+">artillery
+![#00d1a0](http://via.placeholder.com/10/00b48a?text=+&?raw=true)artillery
 ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+)assert
 ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+)axios
 ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+)bcrypt
